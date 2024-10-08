@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 let catergorySchema = new mongoose.Schema({
-    catergoryName: {
+    categoryName: {
         type: String,
         unique: true,
         required: true
     },
-    catergoryImage: String,
-    catergoryDescription: String,
-    catergorystatus: Boolean
+    categoryImage: String,
+    categoryDescription: String,
+    categorystatus: Boolean
 },
     {
         timestamps: true
     }
 )
 
-let catergoryModel = mongoose.model("Category",catergorySchema)
+let categoryModel = mongoose.model("Category",catergorySchema)
 
-module.exports={catergoryModel}
+module.exports={categoryModel}

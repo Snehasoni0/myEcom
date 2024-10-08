@@ -5,6 +5,6 @@ let mainRoute= express.Router();
 mainRoute.use("/admin",adminRoute)
 
 
-//http://localhost:8000/admin/category/insert
+//http://localhost:8000/admin/category/editRow/
 //http://localhost:8000/admin/color/insert
 module.exports={mainRoute}

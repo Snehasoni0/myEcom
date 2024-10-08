@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../common/Sidebar";
 import Header from "../../common/Header";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -10,22 +10,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AddColor() {
+  const [colorPickerValue, setColorPickerValue] = useState('');
+
   let insertColor = (event) => {
     event.preventDefault();
 
-    let colorStatus;
-    for (let i = 0; i < event.target.elements.colorStatus.length; i++) {
-      if (event.target.elements.colorStatus[i].checked) {
-        colorStatus = event.target.elements.colorStatus[i].value;
-        break;
-      }
-    }
     let obj = {
       colorName: event.target.colorName.value,
       colorPicker: event.target.colorPicker.value,
-      colorStatus: colorStatus
+      colorStatus: event.target.colorStatus.value
     }
-    axios.post(`${apiBaseUrl}color/insert`, obj)
+    axios.post(`${apiBaseUrl}color/insert`,obj)
       .then((res) => {
         console.log(res.data)
         if (res.data.status == 0) {
@@ -70,7 +65,15 @@ export default function AddColor() {
               >
                 Color Picker
               </label>
-              <input type="color" name="colorPicker" id="" value={''} />
+
+              {/* <input type="color" name="colorPicker" id="" value={''} /> */}
+              <input
+                type="color"
+                name="colorPicker"
+                value={colorPickerValue}
+                onChange={(e) => setColorPickerValue(e.target.value)}
+              />
+
               <br />
             </div>
             <div className="pe-5 ps-1">
