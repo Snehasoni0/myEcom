@@ -4,17 +4,24 @@ import { apiBaseUrl } from "../../config/apiBaseUrl";
 import axios from "axios";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { Link, useParams } from "react-router-dom";
+import ResponsivePagination from 'react-responsive-pagination';
+
 
 
 export default function ViewCategory() {
   let [orderModal, setOrderModal] = useState(false);
   let [data, setData] = useState([]);
   let [path, setPath] = useState('');
+  const [searchData, setSearchData] = useState({ catName: '', catDesc: '' ,  pageNumber: 1});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,settotalPages] = useState(0);
 
   let [allId, setAllId] = useState([])
 
   let getCategory = () => {
-    axios.get(`${apiBaseUrl}category/view`)
+    axios.get(`${apiBaseUrl}category/view`, {
+      params: searchData
+    })
       .then((res) => {
         return res.data;
       })
@@ -22,6 +29,7 @@ export default function ViewCategory() {
         if (finalRes.status == 1) {
           setData(finalRes.data);
           setPath(finalRes.path)
+          settotalPages(finalRes.pages)
         }
       })
   };
@@ -105,138 +113,44 @@ export default function ViewCategory() {
     });
   }
 
- 
+  let getsearchValue = (event) => {
+    let oldData = { ...searchData };
+    oldData[event.target.name] = event.target.value;
+    setSearchData(oldData);
+    // getCategory();
+  }
+  useEffect(() => {
+    // console.log(searchData)
+    getCategory();
+  }, [searchData])
 
+  let searchDataResult = (event) => {
+    event.preventDefault();
+    getCategory();
+  }
 
+  useEffect(()=>{
+    // console.log(currentPage)
+    let oldData ={...searchData}
+    oldData['pageNumber']=currentPage;
+    setSearchData(oldData)
+  },[currentPage])
   return (
     <section className="w-full">
-      {/* Order Modal Start */}
-      <div
-        id="order-modal"
-        className={`${orderModal === true ? `block` : `hidden`
-          }  block overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}
-      >
-        <div
-          className="fixed w-full h-screen "
-          style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
-        >
-          <div className="relative p-4 px-20 w-full max-w-full max-h-full">
-            <div className="relative bg-white rounded-lg shadow ">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Product Image's & Price
-                </h3>
-                <button
-                  onClick={() => setOrderModal(false)}
-                  type="button"
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                  data-modal-hide="order-modal"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
-              <div className="p-4 md:p-5 space-y-4">
-                <div className="grid grid-cols-[22%_45%_27%] gap-10">
-                  <div className="border-2 rounded-md shadow-md p-4">
-                    <img
-                      src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/902af913-69be-4024-b22c-cd573b7dd13b1613028902744-Roadster-Men-Tshirts-9521613028900435-1.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex items-start flex-wrap gap-5 border-2 rounded-md shadow-md p-3">
-                    <img
-                      className="w-36"
-                      src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/7f8383cc-07f5-4714-b451-fba7d49776921613028902727-Roadster-Men-Tshirts-9521613028900435-2.jpg"
-                      alt=""
-                    />
-                    <img
-                      className="w-36"
-                      src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/5d8249b2-cbfa-42a3-9b8a-9406fcb8af0c1613028902710-Roadster-Men-Tshirts-9521613028900435-3.jpg"
-                      alt=""
-                    />
-                    <img
-                      className="w-36"
-                      src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/bf9e30b3-5b8e-4cf1-811b-81ea64d45ed81613028902692-Roadster-Men-Tshirts-9521613028900435-4.jpg"
-                      alt=""
-                    />
-                    <img
-                      className="w-36"
-                      src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/77451543-64cb-4294-8f82-24ac1d78dcf01613028902666-Roadster-Men-Tshirts-9521613028900435-5.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="border-2 rounded-md shadow-md p-3">
-                    <h3 className="text-center font-semibold text-[20px]">
-                      Product Details
-                    </h3>
-                    <ul className="space-y-4 mt-8">
-                      <li className="font-semibold text-[17px]">
-                        Price :{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; ₹ 1500
-                        </span>{" "}
-                      </li>
-                      <li className="font-semibold text-[17px]">
-                        MRP :{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; ₹ 3000
-                        </span>{" "}
-                      </li>
-                      <li className="font-semibold text-[17px]">
-                        Manage Stock :{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; In Stock
-                        </span>{" "}
-                      </li>
-                      <li className="font-semibold text-[17px]">
-                        Brand Name:{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; Lev's
-                        </span>{" "}
-                      </li>
-                      <li className="font-semibold text-[17px]">
-                        Size :{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; Xl{" "}
-                        </span>{" "}
-                      </li>
-                      <li className="font-semibold text-[17px]">
-                        Color :{" "}
-                        <span className="font-normal text-[16px] ">
-                          &nbsp; Red{" "}
-                        </span>{" "}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Order Modal End */}
+
       <Breadcrumb
         path={"Parent Category"}
         path2={"View Category"}
         slash={"/"}
       />
       <div className="w-full min-h-[610px]">
+
         <div className="max-w-[1220px] mx-auto py-5">
+          <form action="" className="grid grid-cols-3 gap-[30px] py-3" onSubmit={searchDataResult}>
+            <input onChange={getsearchValue} type="text" name="catName" id="" className="border-2 h-14" placeholder="search by category name" />
+            <input onChange={getsearchValue} type="text" name="catDesc" id="" className="border-2" placeholder="search by category Description" />
+            <button className="bg-blue-600 text-white">Search</button>
+          </form>
           <h3 className="text-[26px] font-semibold bg-slate-100 py-3 px-4 rounded-t-md border border-slate-400">
             View Category
           </h3>
@@ -288,7 +202,7 @@ export default function ViewCategory() {
                             />
                           </th>
                           <td className="px-6 py-4">
-                            {index + 1} <br />
+                            {(currentPage-1)*5+(index + 1)} <br />
                             {/* {item._id}  */}
                           </td>
                           <td className="px-6 py-4">
@@ -349,6 +263,12 @@ export default function ViewCategory() {
 
                 </tbody>
               </table>
+
+              <ResponsivePagination
+                current={currentPage}
+                total={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>

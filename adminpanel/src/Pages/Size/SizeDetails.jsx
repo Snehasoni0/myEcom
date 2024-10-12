@@ -41,7 +41,7 @@ export default function SizeDetails() {
                 name="sizeName"
                 id="base-input"
                 className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3 "
-                placeholder="Side Name"
+                placeholder="Size Name"
               />
             </div>
             <div className="pe-5 ps-1">

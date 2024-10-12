@@ -40,11 +40,28 @@ let categoryInsert = async (req, res) => {
 
 
 let categoryView = async (req, res) => {
-    let ViewData = await categoryModel.find();
+    let limit = 5;
+    let searchData = {
+
+    }
+    let { catName, catDesc, pageNumber } = req.query;
+    if (catName !== undefined) {
+        searchData['categoryName'] = new RegExp(catName, 'i')
+    }
+    if (catDesc !== undefined) {
+        searchData['categoryDescription'] = new RegExp(catDesc, 'i')
+    }
+
+    let ViewData = await categoryModel.find(searchData).skip((pageNumber-1)*limit).limit(limit);
+    let ViewDatalen = await categoryModel.find(searchData);
+    let totlength = ViewDatalen.length;
     let obj = {
         status: 1,
         path: process.env.CATEGORYBASEURL,
-        data: ViewData
+        tot: totlength,
+        limit,
+        pages: Math.ceil(totlength / limit),
+        data: ViewData,
     }
     res.send(obj);
 }
@@ -100,8 +117,8 @@ let editData = async (req, res) => {
     res.send(obj)
 }
 
-let updateRow =async (req, res) => {
-    let id  = req.params.id;
+let updateRow = async (req, res) => {
+    let id = req.params.id;
     let { categoryName, categoryImage, categoryDescription, status } = req.body;
     let obj = {
         categoryName: categoryName,
@@ -115,8 +132,8 @@ let updateRow =async (req, res) => {
             obj['categoryImage'] = req.file.filename
         }
     }
-    
-    let updateData = await categoryModel.updateOne({_id:id},{$set:obj})
+
+    let updateData = await categoryModel.updateOne({ _id: id }, { $set: obj })
     let resObj = {
         status: 1,
         msg: 'delete data',
@@ -127,4 +144,4 @@ let updateRow =async (req, res) => {
 
 
 
-module.exports = { categoryInsert, categoryView, categoryDelete, categoryMultiDelete, editData , updateRow}
+module.exports = { categoryInsert, categoryView, categoryDelete, categoryMultiDelete, editData, updateRow }

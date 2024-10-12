@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import 'react-responsive-pagination/themes/classic.css';
 import "./index.css";
 import Home from "./Home.jsx";
 import 'sweetalert2/src/sweetalert2.scss'
