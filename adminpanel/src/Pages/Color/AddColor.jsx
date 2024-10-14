@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../common/Sidebar";
 import Header from "../../common/Header";
 import Breadcrumb from "../../common/Breadcrumb";
@@ -8,9 +8,20 @@ import axios from "axios";
 import { apiBaseUrl } from "../../config/apiBaseUrl";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 export default function AddColor() {
+  let [status, setStatus] = useState(false);
   const [colorPickerValue, setColorPickerValue] = useState('');
+  let [formAllData, setFormAllData] = useState({
+    colorName: '',
+    colorPicker: '',
+    colorStatus: 1
+  })
+
+
+  let navigater = useNavigate();
 
   let insertColor = (event) => {
     event.preventDefault();
@@ -20,20 +31,60 @@ export default function AddColor() {
       colorPicker: event.target.colorPicker.value,
       colorStatus: event.target.colorStatus.value
     }
-    axios.post(`${apiBaseUrl}color/insert`,obj)
+    axios.post(`${apiBaseUrl}color/insert`, obj)
       .then((res) => {
         console.log(res.data)
         if (res.data.status == 0) {
           let { error } = res.data;
           if (error.errorResponse.code == 11000)
-            toast.error(error.errorResponse.errmsg)
+            toast.error("Data not inserted")
 
         } else {
           toast.success(res.data.message)
+          window.setTimeout(()=>{
+            setStatus(true)
+          },1000)
           event.target.reset();
         }
       })
   };
+  useEffect(() => {
+    if(status){
+      setStatus(false)
+      navigater('/colors/view-color')
+    }
+  }, [status])
+
+  let getandsetValue = (event) => {
+    let obj = { ...formAllData };
+    obj[event.target.name] = event.target.value;
+    setFormAllData(obj)
+  }
+  useEffect(() => {
+    console.log(formAllData)
+  }, [formAllData])
+
+  let { id } = useParams();
+  useEffect(() => {
+    setFormAllData({
+      colorName: '',
+      colorPicker: '',
+      colorStatus: 1
+    })
+    if (id !== undefined) {
+      axios.get(`${apiBaseUrl}color/edit/${id}`)
+        .then((res) => {
+          if (res.data.status == 1) {
+            let { colorName, colorPicker, colorStatus } = res.data.data;
+            setFormAllData({
+              colorName: colorName,
+              colorPicker: colorPicker,
+              colorStatus: colorStatus
+            })
+          }
+        })
+    }
+  }, [id])
   return (
     <>
       <Breadcrumb path={"Colors"} path2={"Add Color"} slash={"/"} />
@@ -53,6 +104,8 @@ export default function AddColor() {
               <input
                 type="text"
                 name="colorName"
+                onChange={getandsetValue}
+                value={formAllData.colorName}
                 id="base-input"
                 className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3 "
                 placeholder="Color Name"
@@ -70,6 +123,7 @@ export default function AddColor() {
               <input
                 type="color"
                 name="colorPicker"
+                onChangeCapture={getandsetValue}
                 value={colorPickerValue}
                 onChange={(e) => setColorPickerValue(e.target.value)}
               />
@@ -83,7 +137,9 @@ export default function AddColor() {
                   id="link-radio"
                   name="colorStatus"
                   type="radio"
-                  value="true"
+                  value={1}
+                  onChange={getandsetValue}
+                  checked={formAllData.colorStatus == true ? true : ''}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                 ></input>
                 Active
@@ -91,7 +147,9 @@ export default function AddColor() {
                   id="link-radio"
                   name="colorStatus"
                   type="radio"
-                  value="false"
+                  value={0}
+                  onChange={getandsetValue}
+                  checked={formAllData.colorStatus == false ? true : ''}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                 ></input>
                 Deactive

@@ -1,25 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../common/Sidebar";
 import Header from "../../common/Header";
 import Breadcrumb from "../../common/Breadcrumb";
 import Footer from "../../common/Footer";
 import axios from "axios";
 import { apiBaseUrl } from "../../config/apiBaseUrl";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SizeDetails() {
+  let [status, setStatus] = useState(false);
 
-  let sizeInsert =(event)=>{
+  let navigater = useNavigate();
+  let sizeInsert = (event) => {
     event.preventDefault();
-    let obj={
-      sizeName : event.target.sizeName.value,
-      sizeStatus : event.target.sizeStatus.value
+    let obj = {
+      sizeName: event.target.sizeName.value,
+      sizeStatus: event.target.sizeStatus.value
     }
     // console.log(obj)
-    axios.post(`${apiBaseUrl}size/insert`,obj)
-    .then((res)=>{
-      console.log(res.data)
-    })
-  }
+    axios.post(`${apiBaseUrl}size/insert`, obj)
+      .then((res) => {
+        console.log(res.data)
+        if (res.data.status == 0) {
+          let { error } = res.data;
+          if (error.errorResponse.code == 11000)
+            toast.error("Data not inserted")
+
+        } else {
+          toast.success(res.data.message)
+          window.setTimeout(() => {
+            setStatus(true)
+          }, 1000)
+          event.target.reset();
+        }
+      })
+  };
+
+  useEffect(() => {
+    if(status)
+    {
+      setStatus(false)
+      navigater(`/size/view-size`)
+    }
+  },[status])
   return (
     <>
       <Breadcrumb path={"Size"} path2={"Size Details"} slash={"/"} />
@@ -73,6 +98,7 @@ export default function SizeDetails() {
             </button>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

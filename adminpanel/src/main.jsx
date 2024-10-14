@@ -120,7 +120,7 @@ const route = createBrowserRouter(
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
         <Route path="colors">
-          <Route path="add-color" element={<AddColor />}></Route>
+          <Route path="add-color/:id?" element={<AddColor />}></Route>
           <Route path="view-color" element={<ViewColor />}></Route>
         </Route>
         <Route path="size">
@@ -132,7 +132,7 @@ const route = createBrowserRouter(
           <Route path="view-category" element={<ViewCategory />}></Route>
         </Route>
         <Route path="sub-category">
-          <Route path="add-sub-category" element={<AddSubCategory />}></Route>
+          <Route path="add-sub-category/:id?" element={<AddSubCategory />}></Route>
           <Route path="view-sub-category" element={<ViewSubCategory />}></Route>
         </Route>
         <Route path="product">

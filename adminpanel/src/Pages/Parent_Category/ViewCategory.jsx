@@ -12,9 +12,9 @@ export default function ViewCategory() {
   let [orderModal, setOrderModal] = useState(false);
   let [data, setData] = useState([]);
   let [path, setPath] = useState('');
-  const [searchData, setSearchData] = useState({ catName: '', catDesc: '' ,  pageNumber: 1});
+  const [searchData, setSearchData] = useState({ catName: '', catDesc: '', pageNumber: 1 });
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages,settotalPages] = useState(0);
+  const [totalPages, settotalPages] = useState(0);
 
   let [allId, setAllId] = useState([])
 
@@ -129,12 +129,12 @@ export default function ViewCategory() {
     getCategory();
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     // console.log(currentPage)
-    let oldData ={...searchData}
-    oldData['pageNumber']=currentPage;
+    let oldData = { ...searchData }
+    oldData['pageNumber'] = currentPage;
     setSearchData(oldData)
-  },[currentPage])
+  }, [currentPage])
   return (
     <section className="w-full">
 
@@ -202,7 +202,7 @@ export default function ViewCategory() {
                             />
                           </th>
                           <td className="px-6 py-4">
-                            {(currentPage-1)*5+(index + 1)} <br />
+                            {(currentPage - 1) * 5 + (index + 1)} <br />
                             {/* {item._id}  */}
                           </td>
                           <td className="px-6 py-4">

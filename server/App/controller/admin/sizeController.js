@@ -37,4 +37,29 @@ let getSize = async (req, res) => {
     }
     res.send(obj)
 }
-module.exports = { sizeInsert, getSize }
+
+let deleteSize = async (req, res) => {
+    let id = req.params.id;
+    let sizeData = await sizeModel.deleteOne({ _id: id });
+    let obj = {
+        status: 1,
+        'message': 'data deleted',
+        sizeData
+    }
+    res.send(obj)
+}
+
+let deleteMultiSize = async (req, res) => {
+    let {allId} = req.body;
+    console.log(allId)
+
+    let sizeData = await sizeModel.deleteMany({ _id:  allId})
+    let obj = {
+        status: 1,
+        'message': 'data deleted',
+        sizeData
+    }
+    res.send(obj)
+}
+
+module.exports = { sizeInsert, getSize, deleteSize, deleteMultiSize }

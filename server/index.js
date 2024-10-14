@@ -6,6 +6,7 @@ const { mainRoute } = require("./App/mainRoutes");
 let app = express()
 app.use(cors())
 app.use("/uploads/category",express.static("uploads/category"))
+app.use("/uploads/subcategory",express.static("uploads/subcategory"))
 app.use(express.json())
 app.use(mainRoute)
 
